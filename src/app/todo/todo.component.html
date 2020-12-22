@@ -1,1 +1,19 @@
-<p>todo works!</p>
+<input #todoInput 
+  type='text' 
+  autofocus='autofocus' 
+  (keyup)="onKeyUp($event)"
+/>
+<button (click)="addTodo()">Add</button>
+<br/>
+<br/>
+TODO LIST: 
+<ul class="todo-list">
+  <li *ngFor="let item of todoList; index as i">
+    <input 
+      type="checkbox" 
+      [checked]="item.status === TODO_STATUS.DONE" 
+      (change)="onStatusChange(i)"
+    />
+    {{item.label}}
+  </li>
+</ul>
