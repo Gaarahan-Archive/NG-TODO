@@ -8,12 +8,19 @@ import {Todo, TODO_STATUS} from './todo.component.model'
 })
 export class TodoComponent implements OnInit {
   @ViewChild('todoInput') todoInputEle: TemplateRef<any>
-
   TODO_STATUS = TODO_STATUS
-  todoList: Array<Todo>
-  constructor() { 
-    this.todoList = [];
+  todoList: Array<TODO> = [];
+  filterStatus: TODO_STATUS
+
+  constructor() { }
+
+  get filteredTodoList(): Array<Todo> {
+    if (this.filterStatus === TODO_STATUS.ALL) {
+      return this.todoList
+    }
+    return this.todoList.filter(itm => itm.status === this.filterStatus)
   }
+
 
   ngOnInit(): void { }
 
@@ -38,5 +45,9 @@ export class TodoComponent implements OnInit {
     const status = this.todoList[index].status;
     this.todoList[index].status = 
       status === TODO_STATUS.ACTIVE ? TODO_STATUS.DONE : TODO_STATUS.ACTIVE;
+  }
+
+  onFilterChange() {
+
   }
 }
