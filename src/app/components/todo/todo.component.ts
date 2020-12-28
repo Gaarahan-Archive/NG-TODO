@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import {Todo, TODO_STATUS} from './todo.component.model'
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {TODO, TODO_STATUS} from './todo.component.model';
 
 @Component({
   selector: 'app-todo',
@@ -7,47 +7,43 @@ import {Todo, TODO_STATUS} from './todo.component.model'
   styleUrls: ['./todo.component.less']
 })
 export class TodoComponent implements OnInit {
-  @ViewChild('todoInput') todoInputEle: TemplateRef<any>
-  TODO_STATUS = TODO_STATUS
+  @ViewChild('todoInput', { static: true }) todoInputEle: ElementRef<HTMLInputElement>;
+  TODO_STATUS = TODO_STATUS;
   todoList: Array<TODO> = [];
-  filterStatus: TODO_STATUS
+  filterStatus: TODO_STATUS = TODO_STATUS.ALL;
 
   constructor() { }
 
-  get filteredTodoList(): Array<Todo> {
+  get filteredTodoList(): Array<TODO> {
     if (this.filterStatus === TODO_STATUS.ALL) {
-      return this.todoList
+      return this.todoList;
     }
-    return this.todoList.filter(itm => itm.status === this.filterStatus)
+    return this.todoList.filter(itm => itm.status === this.filterStatus);
   }
 
 
   ngOnInit(): void { }
 
-  addTodo() {
-    const todoText = this.todoInputEle.nativeElement.value.trim();
+  addTodo(value: string): void {
+    const todoText = value.trim();
     if (todoText) {
       this.todoList.push({
         label: todoText,
         status: TODO_STATUS.ACTIVE
-      })
+      });
       this.todoInputEle.nativeElement.value = '';
     }
   }
 
-  onKeyUp(event) {
-    if (event.key === "Enter") {
-      this.addTodo();
+  onKeyUp(event): void {
+    if (event.key === 'Enter') {
+      this.addTodo(this.todoInputEle.nativeElement.value);
     }
   }
 
-  onStatusChange(index) {
+  onStatusChange(index): void {
     const status = this.todoList[index].status;
-    this.todoList[index].status = 
+    this.todoList[index].status =
       status === TODO_STATUS.ACTIVE ? TODO_STATUS.DONE : TODO_STATUS.ACTIVE;
-  }
-
-  onFilterChange() {
-
   }
 }

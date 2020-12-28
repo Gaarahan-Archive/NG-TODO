@@ -1,18 +1,19 @@
-<input #todoInput 
-  type='text' 
-  autofocus='autofocus' 
+<input
+  #todoInput
+  type='text'
+  autofocus='autofocus'
   (keyup)="onKeyUp($event)"
 />
-<button (click)="addTodo()">Add</button>
+<button (click)="addTodo(todoInput.value)">Add</button>
 <br/>
 <br/>
 
-TODO LIST: 
+TODO LIST:
 <ul class="todo-list">
   <li *ngFor="let item of filteredTodoList; index as i">
-    <input 
-      type="checkbox" 
-      [checked]="item.status === TODO_STATUS.DONE" 
+    <input
+      type="checkbox"
+      [checked]="item.status === TODO_STATUS.DONE"
       (change)="onStatusChange(i)"
     />
     {{item.label}}
@@ -20,11 +21,6 @@ TODO LIST:
 </ul>
 
 Filter:
-<input id="all" type="radio" name="filter" />
-<label for="all">ALL</label>
-
-<input id="active" type="radio" name="filter" />
-<label for="active">ACTIVE</label>
-
-<input id="done" type="radio" name="filter" />
-<label for="done">DONE</label>
+<app-status-filter
+  [(filter)]="filterStatus"
+></app-status-filter>
