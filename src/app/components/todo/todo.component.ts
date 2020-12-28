@@ -1,5 +1,7 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {TODO, TODO_STATUS} from './todo.component.model';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { TODO, TODO_STATUS } from './todo.component.model';
+import { Store } from '@ngxs/store';
+import { TodoState } from '../../ngxs/state/todo.state';
 
 @Component({
   selector: 'app-todo',
@@ -8,11 +10,12 @@ import {TODO, TODO_STATUS} from './todo.component.model';
 })
 export class TodoComponent implements OnInit {
   @ViewChild('todoInput', { static: true }) todoInputEle: ElementRef<HTMLInputElement>;
+
   TODO_STATUS = TODO_STATUS;
-  todoList: Array<TODO> = [];
+  todoList: Array<TODO>;
   filterStatus: TODO_STATUS = TODO_STATUS.ALL;
 
-  constructor() { }
+  constructor(private store: Store) { }
 
   get filteredTodoList(): Array<TODO> {
     if (this.filterStatus === TODO_STATUS.ALL) {
@@ -22,7 +25,9 @@ export class TodoComponent implements OnInit {
   }
 
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.todoList = this.store.selectSnapshot(TodoState.todoList);
+  }
 
   addTodo(value: string): void {
     const todoText = value.trim();

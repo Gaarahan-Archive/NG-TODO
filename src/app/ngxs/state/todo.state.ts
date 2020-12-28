@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { State, StateToken } from '@ngxs/store';
+import { Selector, State, StateToken } from '@ngxs/store';
 import { TODO, TODO_STATUS } from '../../components/todo/todo.component.model';
 import { cloneDeep } from 'lodash';
 
@@ -31,6 +31,9 @@ const initialState: ITodoStateModel = {
 })
 @Injectable()
 export class TodoState {
-
+  @Selector([TODO_TOKEN])
+  static todoList(state: ITodoStateModel): TODO[] {
+    return state.todoList;
+  }
 }
 
