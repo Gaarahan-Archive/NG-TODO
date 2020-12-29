@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TODO, TODO_STATUS } from './todo.component.model';
 import { Select, Store } from '@ngxs/store';
 import { TodoState } from '../../ngxs/state/todo.state';
@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 })
 export class TodoComponent implements OnInit, OnDestroy {
   @ViewChild('todoInput', { static: true }) todoInputEle: ElementRef<HTMLInputElement>;
-  @Select(state => state.todoList) todoList$: Observable<TODO[]>;
+  @Select(state => state.todo.todoList) todoList$: Observable<TODO[]>;
 
   TODO_STATUS = TODO_STATUS;
   todoList: Array<TODO>;
@@ -29,7 +29,9 @@ export class TodoComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.todoList = this.store.selectSnapshot(TodoState.todoList);
+    this.todoList$.subscribe((todoList) => {
+        this.todoList = todoList;
+    });
   }
 
   addTodo(value: string): void {
