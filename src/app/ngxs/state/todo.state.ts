@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Selector, State, StateToken } from '@ngxs/store';
+import { Action, Selector, State, StateContext, StateToken } from '@ngxs/store';
 import { TODO, TODO_STATUS } from '../../components/todo/todo.component.model';
 import { cloneDeep } from 'lodash';
+import { TodoActions } from '../actions/todo.actions';
 
 export interface ITodoStateModel {
   todoList: TODO[];
@@ -34,6 +35,13 @@ export class TodoState {
   @Selector([TODO_TOKEN])
   static todoList(state: ITodoStateModel): TODO[] {
     return state.todoList;
+  }
+
+  @Action(TodoActions.AddTodo)
+  addTodo(ctx: StateContext<any>, action: TodoActions.AddTodo) {
+    const { newTodoItem } = action;
+    const state = ctx.getState();
+    ctx.patchState({todoList: [...state.todoList, newTodoItem]});
   }
 }
 

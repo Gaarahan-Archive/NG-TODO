@@ -1,15 +1,18 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { TODO, TODO_STATUS } from './todo.component.model';
-import { Store } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import { TodoState } from '../../ngxs/state/todo.state';
+import { TodoActions } from '../../ngxs/actions/todo.actions';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-todo',
   templateUrl: './todo.component.html',
   styleUrls: ['./todo.component.less']
 })
-export class TodoComponent implements OnInit {
+export class TodoComponent implements OnInit, OnDestroy {
   @ViewChild('todoInput', { static: true }) todoInputEle: ElementRef<HTMLInputElement>;
+  @Select(state => state.todoList) todoList$: Observable<TODO[]>;
 
   TODO_STATUS = TODO_STATUS;
   todoList: Array<TODO>;
@@ -32,10 +35,12 @@ export class TodoComponent implements OnInit {
   addTodo(value: string): void {
     const todoText = value.trim();
     if (todoText) {
-      this.todoList.push({
-        label: todoText,
-        status: TODO_STATUS.ACTIVE
-      });
+      this.store.dispatch(new TodoActions.AddTodo(
+        {
+          label: todoText,
+          status: TODO_STATUS.ACTIVE
+        }
+      )).subscribe(() => console.log('Add todo success'));
       this.todoInputEle.nativeElement.value = '';
     }
   }
@@ -50,5 +55,8 @@ export class TodoComponent implements OnInit {
     const status = this.todoList[index].status;
     this.todoList[index].status =
       status === TODO_STATUS.ACTIVE ? TODO_STATUS.DONE : TODO_STATUS.ACTIVE;
+  }
+
+  ngOnDestroy(): void {
   }
 }
