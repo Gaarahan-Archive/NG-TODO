@@ -41,7 +41,7 @@ export class TodoState {
   addTodo(ctx: StateContext<any>, action: TodoActions.AddTodo) {
     const { newTodoItem } = action;
     const state = ctx.getState();
-    ctx.patchState({todoList: [...state.todoList, newTodoItem]});
+    ctx.patchState({ todoList: [...state.todoList, newTodoItem] });
   }
 }
 

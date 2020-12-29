@@ -3,7 +3,8 @@ import { TODO, TODO_STATUS } from './todo.component.model';
 import { Select, Store } from '@ngxs/store';
 import { TodoState } from '../../ngxs/state/todo.state';
 import { TodoActions } from '../../ngxs/actions/todo.actions';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-todo',
@@ -17,6 +18,7 @@ export class TodoComponent implements OnInit, OnDestroy {
   TODO_STATUS = TODO_STATUS;
   todoList: Array<TODO>;
   filterStatus: TODO_STATUS = TODO_STATUS.ALL;
+  private $destroy = new Subject();
 
   constructor(private store: Store) { }
 
@@ -29,19 +31,21 @@ export class TodoComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.todoList$.subscribe((todoList) => {
-        this.todoList = todoList;
-    });
+    this.todoList$
+        .pipe(takeUntil(this.$destroy))
+        .subscribe((todoList) => {
+          this.todoList = todoList;
+        });
   }
 
   addTodo(value: string): void {
     const todoText = value.trim();
     if (todoText) {
       this.store.dispatch(new TodoActions.AddTodo(
-        {
-          label: todoText,
-          status: TODO_STATUS.ACTIVE
-        }
+          {
+            label: todoText,
+            status: TODO_STATUS.ACTIVE
+          }
       )).subscribe(() => console.log('Add todo success'));
       this.todoInputEle.nativeElement.value = '';
     }
@@ -56,9 +60,11 @@ export class TodoComponent implements OnInit, OnDestroy {
   onStatusChange(index): void {
     const status = this.todoList[index].status;
     this.todoList[index].status =
-      status === TODO_STATUS.ACTIVE ? TODO_STATUS.DONE : TODO_STATUS.ACTIVE;
+        status === TODO_STATUS.ACTIVE ? TODO_STATUS.DONE : TODO_STATUS.ACTIVE;
   }
 
   ngOnDestroy(): void {
+    this.$destroy.next();
+    this.$destroy.complete();
   }
 }
