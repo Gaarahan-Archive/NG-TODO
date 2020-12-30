@@ -17,6 +17,8 @@ TODO LIST:
       (change)="onStatusChange(i)"
     />
     {{item.label}}
+
+    <button (click)="deleteTodo(item.id)">Delete</button>
   </li>
 </ul>
 

@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { TODO, TODO_STATUS } from './todo.component.model';
+import { TodoItem, TODO_STATUS } from './todoModel';
 import { Select, Store } from '@ngxs/store';
-import { TodoState } from '../../ngxs/state/todo.state';
 import { TodoActions } from '../../ngxs/actions/todo.actions';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -13,22 +12,23 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class TodoComponent implements OnInit, OnDestroy {
   @ViewChild('todoInput', { static: true }) todoInputEle: ElementRef<HTMLInputElement>;
-  @Select(state => state.todo.todoList) todoList$: Observable<TODO[]>;
+  @Select(state => state.todo.todoList) todoList$: Observable<TodoItem[]>;
 
   TODO_STATUS = TODO_STATUS;
-  todoList: Array<TODO>;
+  todoList: Array<TodoItem>;
+
   filterStatus: TODO_STATUS = TODO_STATUS.ALL;
   private $destroy = new Subject();
 
   constructor(private store: Store) { }
 
-  get filteredTodoList(): Array<TODO> {
+  get filteredTodoList(): Array<TodoItem> {
     if (this.filterStatus === TODO_STATUS.ALL) {
       return this.todoList;
     }
+
     return this.todoList.filter(itm => itm.status === this.filterStatus);
   }
-
 
   ngOnInit(): void {
     this.todoList$
@@ -46,9 +46,16 @@ export class TodoComponent implements OnInit, OnDestroy {
             label: todoText,
             status: TODO_STATUS.ACTIVE
           }
-      )).subscribe(() => console.log('Add todo success'));
+      )).subscribe(_ => console.log('Add todo success'));
+      this.filterStatus = TODO_STATUS.ALL;
       this.todoInputEle.nativeElement.value = '';
     }
+  }
+
+  deleteTodo(deleteId: string): void {
+    this.store.dispatch(new TodoActions.DeleteTodo(
+        deleteId
+    )).subscribe(_ => console.log('Delete Success'));
   }
 
   onKeyUp(event): void {

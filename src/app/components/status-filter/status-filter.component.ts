@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {TODO_STATUS} from '../todo/todo.component.model';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { TODO_STATUS } from '../todo/todoModel';
 
 @Component({
   selector: 'app-status-filter',
