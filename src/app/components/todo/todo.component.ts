@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { TodoItem, TODO_STATUS } from './todoModel';
+import { TODO_STATUS, TodoItem } from './todoModel';
 import { Select, Store } from '@ngxs/store';
 import { TodoActions } from '../../ngxs/actions/todo.actions';
 import { Observable, Subject } from 'rxjs';
@@ -66,8 +66,10 @@ export class TodoComponent implements OnInit, OnDestroy {
 
   onStatusChange(index): void {
     const status = this.todoList[index].status;
-    this.todoList[index].status =
-        status === TODO_STATUS.ACTIVE ? TODO_STATUS.DONE : TODO_STATUS.ACTIVE;
+    this.store.dispatch(new TodoActions.ChangeStatus({
+      ...this.todoList[index],
+      status: status === TODO_STATUS.ACTIVE ? TODO_STATUS.DONE : TODO_STATUS.ACTIVE
+    })).subscribe(_ => console.log('Change Status Success'));
   }
 
   ngOnDestroy(): void {
