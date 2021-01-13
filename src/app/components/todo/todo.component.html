@@ -10,14 +10,16 @@
 
 TODO LIST:
 <ul class="todo-list">
-  <li *ngFor="let item of filteredTodoList; index as i">
+  <li
+      *ngFor="let item of filteredTodoList; index as i"
+      style="margin: 0 10px"
+  >
     <input
       type="checkbox"
       [checked]="item.status === TODO_STATUS.DONE"
       (change)="onStatusChange(i)"
     />
-    {{item.label}}
-
+    <span style="padding: 0 20px">{{item.label}}</span>
     <button (click)="deleteTodo(item.id)">Delete</button>
   </li>
 </ul>

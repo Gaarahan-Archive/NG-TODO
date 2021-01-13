@@ -10,11 +10,16 @@ import { StatusFilterComponent } from './components/status-filter/status-filter.
 import { states } from './ngxs/state/index.state';
 import { environment } from '../environments/environment';
 
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { TableTestComponent } from './components/table-test/table-test.component';
+
 @NgModule({
   declarations: [
     AppComponent,
     TodoComponent,
-    StatusFilterComponent
+    StatusFilterComponent,
+    TableTestComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +29,8 @@ import { environment } from '../environments/environment';
     }),
     NgxsReduxDevtoolsPluginModule.forRoot({
       disabled: environment.production
-    })
+    }),
+    NzToolTipModule
   ],
   providers: [],
   bootstrap: [AppComponent]
