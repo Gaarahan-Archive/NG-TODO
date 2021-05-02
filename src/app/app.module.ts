@@ -11,18 +11,18 @@ import { states } from './ngxs/state/index.state';
 import { environment } from '../environments/environment';
 
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
-import { NzTableModule } from 'ng-zorro-antd/table';
-import { TableTestComponent } from './components/table-test/table-test.component';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { MockInterceptor } from './interceptor/mock.interceptor';
 
 @NgModule({
   declarations: [
     AppComponent,
     TodoComponent,
-    StatusFilterComponent,
-    TableTestComponent
+    StatusFilterComponent
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     NgxsModule.forRoot(states, {
       developmentMode: !environment.production
@@ -32,7 +32,9 @@ import { TableTestComponent } from './components/table-test/table-test.component
     }),
     NzToolTipModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: MockInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
